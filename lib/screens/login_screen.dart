@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app_practice/screens/home_screen.dart';
 import 'package:todo_app_practice/screens/signup_screen.dart';
 
@@ -21,15 +22,15 @@ class _LogInScreenState extends State<LogInScreen> {
       const Text("please fill the blanks");
     } else {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: email, password: password);
-        if (userCredential.user != null) {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(),
-              ));
-        }
+        SharedPreferences sP = await SharedPreferences.getInstance();
+        sP.setString('email', email);
+        sP.setString('password', password);
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            ));
       } on FirebaseAuthException catch (ex) {
         print(ex.code.toString());
       }
